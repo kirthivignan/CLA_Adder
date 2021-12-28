@@ -1,0 +1,54 @@
+.include TSMC_180nm.txt
+.param SUPPLY=1.8
+.param LAMBDA=0.09u
+.global gnd vdd
+Vdd vdd gnd 'SUPPLY'
+
+
+.subckt nor in1 in2 out vdd gnd 
+.param width_P=20*LAMBDA
+.param width_N=10*LAMBDA
+
+M1 d in1 vdd vdd CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+M2 out in2 d d CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+M3 out in1 gnd gnd CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+M4 out in2 gnd gnd CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+.ends nor
+
+x1 a1 b1 g1 vdd gnd nor
+
+
+
+
+
+.tran 0.1n 200n
+vin_a1 a1 gnd pulse 0 1.8 0ns 100ps 100ps 24.9ns 50ns
+
+vin_b1 b1 gnd pulse 0 1.8 0ns 100ps 100ps 49.9ns 100ns
+
+.control
+set hcopypscolor = 1 *White background for saving plots
+set color0=white ** color0 is used to set the background of the plot (manual sec:17.7))
+set color1=black ** color1 is used to set the grid color of the plot (manual sec:17.7))
+
+run
+set curplottitle= kirthivignan-2020122004
+
+plot v(a1) v(b1)+2 v(g1)+4 
+
+hardcopy fig_mos_4.eps v(a1)  v(b1)+2 v(g1)+4 
+.endc
+.endc
+
+
+
+
+
+
+
+
+

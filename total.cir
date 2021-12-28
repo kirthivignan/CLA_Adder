@@ -1,0 +1,287 @@
+*7) NETLIST for total circuit
+
+
+
+.include TSMC_180nm.txt
+.param SUPPLY=1.8
+.param LAMBDA=0.09u
+.global gnd vdd
+Vdd vdd gnd 'SUPPLY'
+
+*or gate 
+.subckt or in1 in2 out vdd gnd 
+.param width_P=20*LAMBDA
+.param width_N=10*LAMBDA
+
+M1or d in1 vdd vdd CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+M2or invout in2 d d CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+M3or invout in1 gnd gnd CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+M4or invout in2 gnd gnd CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+M11or out  invout gnd gnd CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+M21or out invout vdd vdd CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+.ends or
+
+
+*and gate
+.subckt and in1 in2  out vdd gnd 
+.param width_P=20*LAMBDA
+.param width_N=10*LAMBDA
+
+M1and invout in1 vdd vdd CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+M2and invout in2 vdd vdd CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+M3and invout in1 d d CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+M4and d in2 gnd gnd CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+M11and out  invout gnd gnd CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+M21and out invout vdd vdd CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+.ends and
+
+
+*xor gate
+.subckt xor a b out vdd gnd 
+.param width_P=20*LAMBDA
+.param width_N=10*LAMBDA
+*inverter for a input1
+M11xor inva a gnd gnd CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+M21xor inva a vdd vdd CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+*inverter for b input 2
+
+M12xor invb b gnd gnd CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+M22xor invb b vdd vdd CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+
+
+
+M1xor k inva vdd vdd CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+M2xor out b k k CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+
+M3xor n a vdd vdd CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+M4xor out invb n n CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+
+
+M5xor out inva m m CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+M6xor out b m m CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+M7xor m invb gnd gnd CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+M8xor m a gnd gnd CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+.ends xor
+
+*nand gate
+.subckt nand in1 in2 out vdd gnd 
+.param width_P=20*LAMBDA
+.param width_N=10*LAMBDA
+
+M1 out in1 vdd vdd CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+M2 out in2 vdd vdd CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+M3 out in1 d d CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+M4 d in2 gnd gnd CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+.ends nand
+
+* dilatch circuit
+.subckt dlatch d clk q invq vdd gnd 
+.param width_P=20*LAMBDA
+.param width_N=10*LAMBDA
+
+M11 invd  d gnd gnd CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+M21 invd d vdd vdd CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+x1 d clk s vdd gnd nand
+x2 invd clk r vdd gnd nand
+x3 s invq q vdd gnd nand
+x4 r q invq vdd gnd nand
+.ends dlatch
+
+
+*dflipflop
+.subckt dflipflop d clk q vdd gnd 
+.param width_P=20*LAMBDA
+.param width_N=10*LAMBDA
+
+M12 invclk  clk gnd gnd CMOSN W={width_N} L={2*LAMBDA} +AS={5*width_N*LAMBDA} PS={10*LAMBDA+2*width_N}AD={5*width_N*LAMBDA} PD={10*LAMBDA+2*width_N}
+
+M22 invclk clk vdd vdd CMOSP W={width_P} L={2*LAMBDA} +AS={5*width_P*LAMBDA} PS={10*LAMBDA+2*width_P}AD={5*width_P*LAMBDA} PD={10*LAMBDA+2*width_P}
+
+x5 d invclk q1 invq1 vdd gnd dlatch
+x6 q1 clk q invq vdd gnd dlatch
+
+.ends dflipflop
+
+*input dflipflops
+xa1 ina1 clk a1 vdd gnd dflipflop
+xa2 ina2 clk a2 vdd gnd dflipflop
+xa3 ina3 clk a3 vdd gnd dflipflop
+xa4 ina4 clk a4 vdd gnd dflipflop
+xb1 inb1 clk b1 vdd gnd dflipflop
+xb2 inb2 clk b2 vdd gnd dflipflop
+xb3 inb3 clk b3 vdd gnd dflipflop
+xb4 inb4 clk b4 vdd gnd dflipflop
+
+
+
+
+
+
+
+*ckt for pi
+xa a1 b1 p1 vdd gnd xor
+xb a2 b2 p2 vdd gnd xor
+xc a3 b3 p3 vdd gnd xor
+xd a4 b4 p4 vdd gnd xor
+
+*ckt for gi
+xe a1 b1 g1 vdd gnd and
+xf a2 b2 g2 vdd gnd and
+xg a3 b3 g3 vdd gnd and
+xh a4 b4 g4 vdd gnd and
+
+*ckt for ci
+vc c0 gnd 0v
+vg g0 gnd 0v
+
+xi c0 g0 c1 vdd gnd or
+xj c1 p1 k1 vdd gnd and
+xk k1 g1 c2 vdd gnd or
+xl c2 p2 k2 vdd gnd and
+xm k2 g2 c3 vdd gnd or
+xn c3 p3 k3 vdd gnd and
+xo k3 g3 c4 vdd gnd or 
+xp c4 p4 k4 vdd gnd and
+xq k4 g4 c5 vdd gnd or
+
+*ckt for sumi
+xr p1 c1 sumo1 vdd gnd xor
+xs p2 c2 sumo2 vdd gnd xor
+xt p3 c3 sumo3 vdd gnd xor
+xu p4 c4 sumo4 vdd gnd xor
+
+
+*output dfflipflops
+xsum1 sumo1 clk sum1 vdd gnd dflipflop
+xsum2 sumo2 clk sum2 vdd gnd dflipflop
+xsum3 sumo3 clk sum3 vdd gnd dflipflop
+xsum4 sumo4 clk sum4 vdd gnd dflipflop
+xxarry c5 clk carry vdd gnd dflipflop
+
+
+.tran 0.1n 100n
+vin_a1 ina1 gnd  pulse 1 1.8 0ns 100ps 100ps 9.9ns 20ns
+vin_a2 ina2 gnd pulse 0 1.8 0ns 100ps 100ps 9.9ns 20ns
+vin_a3 ina3 gnd pulse 0 1.8 0ns 100ps 100ps 9.9ns 20ns
+vin_a4 ina4 gnd pulse 0 1.8 0ns 100ps 100ps 9.9ns 20ns
+vin_clk clk gnd pulse 0 1.8 5ns 100ps 100ps 5.4ns 10ns 
+vin_b1 inb1 gnd pulse 1 1.8 0ns 100ps 100ps 9.9ns 20ns
+vin_b2 inb2 gnd pulse 0 1.8 0ns 100ps 100ps 9.9ns 20ns
+vin_b3 inb3 gnd pulse  0 1.8  0ns 100ps 100ps 9.9ns 20ns
+vin_b4 inb4 gnd pulse 0 1.8  0ns 100ps 100ps 9.9ns 20ns
+
+
+
+
+.control
+set hcopypscolor = 1 *White background for saving plots
+set color0=white ** color0 is used to set the background of the plot (manual sec:17.7))
+set color1=black ** color1 is used to set the grid color of the plot (manual sec:17.7))
+
+
+run
+
+
+
+plot  v(sumo1) v(ina1)+2 v(inb1)+4 v(sum1)+6 v(a1)+8 v(b1)+10 v(clk)+12
+plot v(sumo2) v(ina2)+2 v(inb2)+4 v(sum2)+6 v(a2)+8 v(b2)+10 v(clk)+12
+plot  v(sumo3)  v(ina3)+2 v(inb3)+4 v(sum3)+6 v(a3)+8 v(b3)+10 v(clk)+12
+plot v(sumo4)  v(ina4)+2 v(inb4)+4 v(sum4)+6 v(a4)+8 v(b4)+10 v(clk)+12
+plot v(c5) v(carry)+2 v(clk)+4
+
+
+plot  v(sum1) v(a1)+2 v(b1)+4
+plot v(sum2) v(a2)+2 v(b2)+4
+plot  v(sum3)  v(a3)+2 v(b3)+4
+plot v(sum4)  v(a4)+2 v(b4)+4
+plot v(carry)
+
+
+*plot v(p3) 
+*plot v(c3)
+*plot v(a3)
+*plot v(b3) 
+*plot v(g1) 
+*plot v(g3) 
+*plot v(g2) 
+*plot v(g4)
+
+set curplottitle= kirthivignan-2020122004
+
+hardcopy fig_mos_1.eps v(sumo1) v(ina1)+2 v(inb1)+4 v(sum1)+6 v(a1)+8 v(b1)+10 v(clk)+12
+hardcopy fig_mos_2.eps v(sumo2) v(ina2)+2 v(inb2)+4 v(sum2)+6 v(a2)+8 v(b2)+10 v(clk)+12
+hardcopy fig_mos_3.eps v(sumo3)  v(ina3)+2 v(inb3)+4 v(sum3)+6 v(a3)+8 v(b3)+10 v(clk)+12
+hardcopy fig_mos_4.eps  v(ina4)+2 v(inb4)+4 v(sum4)+6 v(a4)+8 v(b4)+10 v(clk)+12
+hardcopy fig_mos_5.eps v(c5) v(carry)+2
+
+.endc
+
+
+.endc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
